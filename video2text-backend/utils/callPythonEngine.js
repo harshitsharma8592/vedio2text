@@ -26,12 +26,14 @@ exports.runTranscription = (youtubeUrl) => {
       if (stderrData) console.error("Python stderr:", stderrData);
 
       try {
+        // Sometimes Python prints logs, so get the last JSON line
         const lines = stdoutData.trim().split("\n");
         const lastLine = lines[lines.length - 1].trim();
         const result = JSON.parse(lastLine);
 
         if (result.error) return reject(new Error(result.error));
-        resolve(result); // Return full object: transcript, segments, overallSentiment
+        // result = { transcript, segments, overallSentiment, language }
+        resolve(result);
       } catch (err) {
         return reject(
           new Error(

@@ -8,6 +8,11 @@ import json
 import traceback
 from textblob import TextBlob
 from langdetect import detect
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 load_dotenv()
 api_key = os.getenv("ASSEMBLYAI_API_KEY")
 

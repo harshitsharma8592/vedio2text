@@ -42,14 +42,12 @@ def transcribe_audio(upload_url):
 
     print(" Transcribing...", file=sys.stderr)
 
-
     while True:
         polling_response = requests.get(polling_endpoint, headers=headers)
         polling_result = polling_response.json()
 
         if polling_result['status'] == 'completed':
             print("Transcription completed", file=sys.stderr)
-
             return polling_result
         elif polling_result['status'] == 'error':
             raise Exception(polling_result.get('error', 'Unknown transcription error'))
@@ -66,7 +64,13 @@ def transcribe_chunks(folder_path='audio_chunks'):
             try:
                 upload_url = upload_audio(file_path)
                 result = transcribe_audio(upload_url)
+                # Use UTF-8 encoding for Hindi and other languages
                 full_text += result.get('text', '') + "\n"
             except Exception as e:
                 print(f"Error transcribing {file}: {e}")
     return full_text
+
+def save_transcript(text, filename="transcript.txt"):
+    """Save transcript text to a file with UTF-8 encoding (supports Hindi, etc.)"""
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(text)
